@@ -18,14 +18,17 @@ def get_file_content(working_directory, file_path):
         output += f'\tError: File not found or is not a regular file: "{file_path}"'
         return output
     
-    with open(full_path, "r") as f:
-        file_content_string = f.read(MAX_CHARS)
+    try:
+        with open(full_path, "r") as f:
+            file_content_string = f.read(MAX_CHARS)
 
-    output += file_content_string
+        output += file_content_string
 
-    if os.path.getsize(full_path) > MAX_CHARS:
-        output += f'[...File "{file_path}" truncated at 10000 characters]'
+        if os.path.getsize(full_path) > MAX_CHARS:
+            output += f'[...File "{file_path}" truncated at 10000 characters]'
 
-    return output
+        return output
+    except Exception as e:
+        return f'Error: {e}'
 
     

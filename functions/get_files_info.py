@@ -20,11 +20,14 @@ def get_files_info(working_directory, directory=None):
         output += f'\tError: "{directory}" is not a directory'
         return output
     
-    for file in os.listdir(full_path):
-        file_path = os.path.join(full_path, file)
-        output += " - "
-        output += file + ": "
-        output += "file_size=" + str(os.path.getsize(file_path)) + " bytes, "
-        output += "is_dir=" + str(os.path.isdir(file_path)) + "\n"
+    try:
+        for file in os.listdir(full_path):
+            file_path = os.path.join(full_path, file)
+            output += " - "
+            output += file + ": "
+            output += "file_size=" + str(os.path.getsize(file_path)) + " bytes, "
+            output += "is_dir=" + str(os.path.isdir(file_path)) + "\n"
 
-    return output
+        return output
+    except Exception as e:
+        return f'Error: {e}'
