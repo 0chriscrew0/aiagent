@@ -5,7 +5,7 @@ from google import genai
 from google.genai import types
 
 from prompts import system_prompt
-from call_function import available_functions
+from call_function import available_functions, call_function
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -31,12 +31,13 @@ response = client.models.generate_content(
 )
 
 if response.function_calls:
-    for function_call_part in response.function_calls:
-        print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+    for function_call_part in response.function_calls:       
+        result = call_function(function_call_part, verbose={"--verbose" in sys.argv})
+
+        if not result.parts[0].function_response.response:
+            raise RuntimeError("Fatal error occured")
+        else:
+            if "--verbose" in sys.argv:
+                print(f"-> {result.parts[0].function_response.response}")
 else:
     print(response.text)
-
-if "--verbose" in sys.argv:
-    print(f"User prompt: {user_prompt}")
-    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-    print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
